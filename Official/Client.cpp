@@ -9,6 +9,7 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include <thread>
+#include <sstream>
 
 using namespace std;
 
@@ -44,7 +45,7 @@ void recvFunc(int sockfd)
                 terminate();
             }
             else
-                cout << "Server said: " << buf << "\n";
+                cout << buf << "\n";
         }
     } while (1);
 }
@@ -89,32 +90,12 @@ int main(int argc, char *argv[])
         cout << "CLIENT: connect to server is failed\n";
         exit(1);
     }
-
-    // while (1) {
-    //     //receive reply from server
-    //     n = read(sockfd, buffer, BUFFER_LEN - 1);
-    //     if (n < 0) {
-    //         cout << "ERROR: cannot read message.\n";
-    //         exit(1);
-    //     }
-    //     cout << "Server said: " << buffer << "\n";
-    //     printf("Please enter the message: ");
-    //     bzero(buffer, BUFFER_LEN - 1);
-    //     fgets(buffer, BUFFER_LEN -1, stdin);
-    // }
     thread recvThread(recvFunc, sockfd);
-    // if (recvThread.joinable())
-    //     recvThread.join();
-    // else {
-    //     cout << "Cannot join to recvThread\n";
-    //     return 0;
-    // }
     while (1) {
         //send message to server
-        // printf("Please enter the message: ");
         bzero(buffer, BUFFER_LEN - 1);
         fgets(buffer, BUFFER_LEN -1, stdin);
-        n = write(sockfd, buffer, strlen(buffer));
+        n = send(sockfd, buffer, strlen(buffer), 0);
         if (n < 0) {
             cout << "ERROR: cannot write message.\n";
             exit(1);

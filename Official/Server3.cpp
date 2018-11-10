@@ -83,6 +83,8 @@ main(int argc, char** argv)
                     //new message
                     char buf[4096];
                     bzero((char*) &buf, sizeof(buf));
+                    // char buf2[4096];
+                    // bzero((char*) &buf2, sizeof(buf2));
 
                     int byteIn = recv(i, &buf, sizeof(buf), 0);
                     if (byteIn == 0) {
@@ -91,15 +93,18 @@ main(int argc, char** argv)
                         close(i);
                         FD_CLR(i, &master_set);
                     } else {
-                        cout <<  i << " said: " << buf << "\n";
-                        send(i, buf, byteIn, 0);
+                        cout << "Client " << i << " said: " << buf << "\n";
+                        ostringstream ss;
+                        ss << "SOCKET #" << i << ": " << buf << "\r\n";
+                        string strOut = ss.str(); 
                         //send to other clinet
                         for (int j = 0; j <= max_sd; j++) {
                             if ((j != listening_sock) && (j != i)) {
                                 if (FD_ISSET(j, &master_set)) {
-                                cout << "tmp: " << j << "\t";//
-                                    if (send(j, buf, byteIn, 0) < 0) {
+                                    if (send(j, strOut.c_str(), strOut.size() + 1, 0) < 0) {
                                         cout << "Cannot send message to other clinet\n";
+                                    } else {
+                                        cout << "Send message to " << j << endl;
                                     }
                                 }
                             }
