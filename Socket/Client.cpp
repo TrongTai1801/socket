@@ -78,9 +78,9 @@ int main(int argc, char *argv[])
     }
     //set server address
     bzero((char *)&serv_addr, sizeof(serv_addr));
-    bcopy((char *)server->h_addr, (char *)&serv_addr, server->h_length);
+    // bcopy((char *)server->h_addr, (char *)&serv_addr, server->h_length);
     serv_addr.sin_family = AF_INET;
-    // serv_addr.sin_addr.s_addr = INADDR_ANY;
+    serv_addr.sin_addr.s_addr = inet_addr("192.168.18.129");//INADDR_ANY;
     serv_addr.sin_port = htons(SERVER_PORT);
     printf("Connecting to address %s, port %d\n",
            inet_ntoa(serv_addr.sin_addr), serv_addr.sin_port);
